@@ -1,0 +1,18 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "nuestro primer proyecto",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "proyecto",
+    "prueba"
+  ],
+  "author": "nahuel",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.3.0"
+  }
+}
