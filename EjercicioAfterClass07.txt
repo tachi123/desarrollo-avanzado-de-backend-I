@@ -1,0 +1,186 @@
+¡Absolutamente! Con gusto te puedo ayudar a crear un nuevo ejercicio.
+
+Nuevo Ejercicio:
+
+Enunciado:
+
+Crea una API RESTful utilizando Express.js que gestione una lista de tareas. Las tareas deben tener un título, una descripción y una fecha de vencimiento. Implementa los siguientes endpoints:
+
+GET /tareas: Devuelve un arreglo con todas las tareas.
+GET /tareas/:id: Devuelve la tarea con el ID especificado.
+POST /tareas: Crea una nueva tarea. El cuerpo de la solicitud debe contener los campos titulo, descripcion y fechaVencimiento.
+PUT /tareas/:id: Actualiza una tarea existente. El cuerpo de la solicitud puede contener cualquier combinación de los campos titulo, descripcion y fechaVencimiento.
+DELETE /tareas/:id: Elimina una tarea.
+Contexto:
+
+Imagina que estás desarrollando una aplicación de gestión de tareas simple. Esta API servirá como backend para una aplicación frontend que permita a los usuarios crear, leer, actualizar y eliminar tareas.
+
+JavaScript
+const express = require('express');
+const { v4: uuidv4 } = require('uuid');
+
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+let tareas = [];
+
+// Validación de fechas
+function isValidDate(dateString) {
+  const date = new Date(dateString);
+  return date instanceof Date && !isNaN(date);
+}
+
+// GET /tareas
+app.get('/tareas', (req, res) => {
+    res.json(tareas);
+});
+
+// GET /tareas/:id
+app.get('/tareas/:id', (req, res) => {
+    const { id } = req.params;
+    const tarea = tareas.find(t => t.id === id);
+    if (!tarea) {
+        return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+    res.json(tarea);
+});
+
+// POST /tareas
+app.post('/tareas', (req, res) => {
+    const { titulo, descripcion, fechaVencimiento } = req.body;
+
+    // Validación de datos
+    if (!titulo || !descripcion || !fechaVencimiento || !isValidDate(fechaVencimiento)) {
+        return res.status(400).json({ error: 'Datos inválidos' });
+    }
+
+    const nuevaTarea = {
+        id: uuidv4(),
+        titulo,
+        descripcion,
+        fechaVencimiento
+    };
+    tareas.push(nuevaTarea);
+    res.status(201).json(nuevaTarea);
+});
+
+// PUT /tareas/:id
+app.put('/tareas/:id', (req, res) => {
+    const { id } = req.params;
+    const { titulo, descripcion, fechaVencimiento } = req.body;
+    const tareaIndex = tareas.findIndex(t => t.id === id);
+
+    if (tareaIndex === -1) {
+        return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+
+    // Validación de datos (opcional: solo si se envían datos)
+    if (fechaVencimiento && !isValidDate(fechaVencimiento)) {
+        return res.status(400).json({ error: 'Fecha de vencimiento inválida' });
+    }
+
+    tareas[tareaIndex] = {
+        ...tareas[tareaIndex],
+        titulo,
+        descripcion,
+        fechaVencimiento
+    };
+    res.json(tareas[tareaIndex]);
+});
+
+// DELETE /tareas/:id
+app.delete('/tareas/:id', (req, res) => {
+    const { id } = req.params;
+    const tareaIndex = tareas.findIndex(t => t.id === id);
+
+    if (tareaIndex === -1) {
+        return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+
+    tareas.splice(tareaIndex, 1);
+    res.status(204).json({ mensaje: 'Tarea eliminada' });
+});
+
+app.listen(port, () => {
+    console.log(`Servidor escuchando en el puerto ${port}`);
+});
+Usa el código con precaución.
+
+Cambios y mejoras:
+
+Validación de fechas: Se agregó una función isValidDate para verificar si la fecha de vencimiento es válida.
+Validación de datos en POST y PUT: Se valida que todos los campos requeridos estén presentes y que la fecha de vencimiento sea válida.
+Códigos de estado HTTP: Se utilizan códigos de estado más específicos:
+400 Bad Request: Cuando los datos proporcionados no son válidos.
+404 Not Found: Cuando no se encuentra la tarea.
+201 Created: Cuando se crea una nueva tarea.
+204 No Content: Cuando se elimina una tarea.
+UUIDs: Se utiliza uuidv4 para generar IDs únicos para las tareas, mejorando la escalabilidad y evitando conflictos.
+Explicación:
+
+La función isValidDate verifica si una cadena de texto representa una fecha válida.
+Se validan los datos en los métodos POST y PUT para asegurar que se proporcionen todos los campos requeridos y que los datos sean válidos.
+Se utilizan códigos de estado HTTP específicos para indicar el resultado de cada solicitud.
+Se emplea uuidv4 para generar IDs únicos para las tareas, evitando la necesidad de mantener un contador manual.
+Próximos pasos:
+
+
+
+URL base: Establece la URL base de tu API (por ejemplo, http://localhost:3000).
+Autorización: Si has implementado algún mecanismo de autenticación, configúralo aquí.
+Requests:
+
+Obtener todas las tareas:
+
+Método: GET
+URL: /tareas
+Cuerpo: (vacío)
+Cabeceras: (opcional)
+Obtener una tarea por ID:
+
+Método: GET
+URL: /tareas/{id} (reemplaza {id} con el ID de la tarea)
+Cuerpo: (vacío)
+Cabeceras: (opcional)
+Crear una nueva tarea:
+
+Método: POST
+URL: /tareas
+Cuerpo:
+JSON
+{
+  "titulo": "Tarea de prueba",
+  "descripcion": "Descripción detallada",
+  "fechaVencimiento": "2024-12-31"
+}
+Usa el código con precaución.
+
+Cabeceras: Content-Type: application/json
+Actualizar una tarea:
+
+Método: PUT
+URL: /tareas/{id} (reemplaza {id} con el ID de la tarea)
+Cuerpo:
+JSON
+{
+  "titulo": "Nuevo título",
+  "descripcion": "Nueva descripción"
+}
+Usa el código con precaución.
+
+Cabeceras: Content-Type: application/json
+Eliminar una tarea:
+
+Método: DELETE
+URL: /tareas/{id} (reemplaza {id} con el ID de la tarea)
+Cuerpo: (vacío)
+Cabeceras: (opcional)
+Pruebas adicionales:
+
+Pruebas negativas:
+Enviar solicitudes con datos inválidos (por ejemplo, una fecha de vencimiento en formato incorrecto) para verificar que la API devuelve el código de estado 400.
+Intentar obtener una tarea que no existe para verificar que se devuelve el código de estado 404.
+Pruebas de rendimiento:
+Enviar un gran número de solicitudes para evaluar la capacidad de respuesta de la API.

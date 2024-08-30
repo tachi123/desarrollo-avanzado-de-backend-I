@@ -4,7 +4,7 @@ const app = express();
 const server = app.listen(8080, ()=> console.log("Listening on PORT 8080"));
 
 app.use(express.json()) //Como indica el método, ahora el servidor podrá recibir jsons al momento de la petición
-app.use(express.urlencoded({encoded:true})) //Permite que se pueda enviar información también desde la URL
+app.use(express.urlencoded({extended:true})) //Permite que se pueda enviar información también desde la URL
 
 let frase = 'Frase inicial con muchas palabras';
 
